@@ -20,23 +20,26 @@ public class Util {
     private static final String LOGIN = "dju";
     private static final String PASSWORD = "1234";
 
+    private static SessionFactory sessionFactory;
     public static SessionFactory getSessionFactory() {
-        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-        Map<String, String> settings = new HashMap<>();
-        settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-        settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
-        settings.put(Environment.URL, HOST);
-        settings.put(Environment.USER, LOGIN);
-        settings.put(Environment.PASS, PASSWORD);
-        registryBuilder.applySettings(settings);
-        StandardServiceRegistry registry = registryBuilder.build();
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(settings).build();
-        MetadataSources metadataSources = new MetadataSources(registry)
-                .addAnnotatedClass(User.class);
-        SessionFactory sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
-
+        if (sessionFactory==null) {
+            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+            Map<String, String> settings = new HashMap<>();
+            settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+            settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
+            settings.put(Environment.URL, HOST);
+            settings.put(Environment.USER, LOGIN);
+            settings.put(Environment.PASS, PASSWORD);
+            registryBuilder.applySettings(settings);
+            StandardServiceRegistry registry = registryBuilder.build();
+            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                    .applySettings(settings).build();
+            MetadataSources metadataSources = new MetadataSources(registry)
+                    .addAnnotatedClass(User.class);
+            sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
+        }
         return sessionFactory;
+
     }
 
     public static Connection getConnection() {

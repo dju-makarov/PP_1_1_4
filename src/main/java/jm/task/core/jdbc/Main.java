@@ -14,7 +14,6 @@ public class Main {
     private static final User user4 = new User("Андрей", "Смирнов", (byte) 13);
 
     public static void main(String[] args) {
-        int i = 1;
         userService.createUsersTable();
 
         userService.saveUser(user1.getName(), user1.getLastName(), user1.getAge());

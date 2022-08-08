@@ -2,17 +2,17 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
+import org.hibernate.criterion.Criterion;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
     private static Transaction transaction;
+
     private static final SessionFactory sessionFactory = Util.getSessionFactory();
 
     public UserDaoHibernateImpl() {
@@ -78,13 +78,24 @@ public class UserDaoHibernateImpl implements UserDao {
         List<User> allUser = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            allUser = (List<User>) session.createQuery("FROM User").getResultList();
+            allUser = session.createQuery("FROM User",User.class).getResultList();
             transaction.commit();
         } catch (HibernateException e) {
             transaction.rollback();
             e.printStackTrace();
         }
         return allUser;
+     /*   Criteria criteria = null;
+        try (Session session = sessionFactory.openSession()) {
+
+            Criterion criterion = null;
+            criteria = session.createCriteria(User.class).add(criterion);
+        } catch (HibernateException e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+        return criteria.list();*/
+
     }
 
     @Override
